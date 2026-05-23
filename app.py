@@ -29,7 +29,7 @@ CAT_CODE: dict[str, str] = {
 # Couleur CSS par code (pour --c dans les cards)
 CAT_COLOR: dict[str, str] = {
     "ec": "#16a34a",
-    "ed": "#d97706",
+    "ed": "#ca8a04",
     "mf": "#64748b",
     "rag": "#ea580c",
     "pm": "#16a34a",
@@ -42,9 +42,9 @@ STATUS_S: dict[str, str] = {"live": "ok", "dev": "wip", "hidden": "soon"}
 # ── Textes UI FR / EN ─────────────────────────────────────────────────────────
 UI: dict[str, dict[str, str]] = {
     "fr": {
-        "title_html": "<span class='a'>Sim</span>Lab",
+        "title_html": "<span class='a'>Applications</span> : modélisation, utilitaires",
         "eyebrow": "outils partagés",
-        "subtitle": "Des simulations et analyses à portée de clic — explorez librement.",
+        "subtitle": "Ouvertes et évolutives à ceux qui les trouveront utiles.",
         "search": "Rechercher...",
         "no_result": "Aucune application ne correspond aux filtres.",
         "open": "Ouvrir l'outil →",
@@ -61,9 +61,9 @@ UI: dict[str, dict[str, str]] = {
         "admin_panel": "Panneau admin — statuts des applications",
     },
     "en": {
-        "title_html": "<span class='a'>Sim</span>Lab",
+        "title_html": "<span class='a'>Applications</span>: modelling, utilities",
         "eyebrow": "shared tools",
-        "subtitle": "Simulations and analyses at your fingertips — explore freely.",
+        "subtitle": "Open and evolving, for those who will find them useful.",
         "search": "Search...",
         "no_result": "No application matches the selected filters.",
         "open": "Open tool →",
@@ -118,7 +118,7 @@ CSS = """
   text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 0.6rem;
 }
 .rdlab-title {
-  font-size: 2.55rem; font-weight: 700; color: #fff;
+  font-size: 2.55rem; font-weight: 700; color: #fff !important;
   letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 0.7rem;
 }
 .rdlab-title .a   { color: #93c5fd; }
@@ -130,7 +130,7 @@ CSS = """
 
 /* TOGGLE LANG */
 .rdlab-lang {
-  position: absolute; top: 1.1rem; right: 1.2rem; z-index: 2;
+  position: absolute; top: 1.1rem; left: 1.2rem; z-index: 2;
   display: flex; background: rgba(255,255,255,0.07); border-radius: 8px; padding: 3px; gap: 2px;
 }
 .rdlab-lang-btn {
@@ -139,6 +139,7 @@ CSS = """
   font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
   padding: 4px 11px; border-radius: 5px; cursor: pointer;
   transition: background 0.14s, color 0.14s; line-height: 1;
+  text-decoration: none !important; display: inline-block;
 }
 .rdlab-lang-btn.on { background: rgba(255,255,255,0.13); color: #fff; }
 .rdlab-lang-btn:hover:not(.on) { color: rgba(255,255,255,0.65); }
@@ -148,30 +149,30 @@ CSS = """
   display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.4rem; flex-wrap: wrap;
 }
 .rdlab-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; min-width: 0; }
-.rdlab-pill input[type=checkbox] { display: none; }
-.rdlab-pill .pl {
+.rdlab-pill {
   display: inline-flex; align-items: center; gap: 0.32rem;
   padding: 0.28rem 0.82rem; border-radius: 999px;
-  border: 1.5px solid var(--c, #2563eb); color: var(--c, #2563eb);
-  background: transparent;
+  border: 1.5px solid var(--c, #475569); color: var(--c, #475569);
+  background: transparent; text-decoration: none !important;
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
   font-size: 0.77rem; font-weight: 500; cursor: pointer; user-select: none;
   white-space: nowrap; transition: background 0.13s, color 0.13s, opacity 0.13s;
 }
-.rdlab-pill input:checked + .pl { background: var(--c, #2563eb); color: #fff; }
-.rdlab-pill:hover .pl { opacity: 0.78; }
-.rdlab-pill:has(input:checked):hover .pl { opacity: 0.88; }
+.rdlab-pill.active { background: var(--c, #475569); color: #fff; }
+.rdlab-pill:hover { opacity: 0.78; }
+.rdlab-pill.active:hover { opacity: 0.88; }
 .rdlab-pill .pc {
   font-size: 0.61rem; font-weight: 700; min-width: 15px; height: 15px;
   border-radius: 99px; display: inline-flex; align-items: center; justify-content: center;
   background: rgba(0,0,0,0.11);
 }
-.rdlab-pill input:checked + .pl .pc { background: rgba(255,255,255,0.22); }
+.rdlab-pill.active .pc { background: rgba(255,255,255,0.22); }
+.rdlab-pill[data-c=all] { --c: #475569; }
 .rdlab-pill[data-c=ec]  { --c: #16a34a; }
 .rdlab-pill[data-c=mf]  { --c: #64748b; }
-.rdlab-pill[data-c=ed]  { --c: #d97706; }
+.rdlab-pill[data-c=ed]  { --c: #ca8a04; }
 .rdlab-pill[data-c=rag] { --c: #ea580c; }
-.rdlab-pill[data-c=pm]  { --c: #16a34a; }
+.rdlab-pill[data-c=pm]  { --c: #1d4ed8; }
 .rdlab-pill[data-c=qv]  { --c: #dc2626; }
 .rdlab-search {
   height: 34px; background: #fff; border: 1.5px solid #e2e8f0; border-radius: 9px;
@@ -186,7 +187,7 @@ CSS = """
 .rdlab-search::placeholder { color: #94a3b8; }
 
 /* GRILLE CARDS */
-.rdlab-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.05rem; }
+.rdlab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.05rem; }
 
 .rdlab-card {
   display: flex; flex-direction: column; background: #fff; border-radius: 14px;
@@ -240,17 +241,13 @@ CSS = """
 }
 .rdlab-cat[data-c=ec]  { background: #f0fdf4; color: #166534; }
 .rdlab-cat[data-c=mf]  { background: #f1f5f9; color: #475569; }
-.rdlab-cat[data-c=ed]  { background: #d97706; color: #fff; }
+.rdlab-cat[data-c=ed]  { background: #fef9c3; color: #854d0e; }
 .rdlab-cat[data-c=rag] { background: #fff7ed; color: #9a3412; }
-.rdlab-cat[data-c=pm]  { background: #f0fdf4; color: #166534; }
+.rdlab-cat[data-c=pm]  { background: #eff6ff; color: #1d4ed8; }
 .rdlab-cat[data-c=qv]  { background: #dc2626; color: #fff; }
 
-.rdlab-card-title { font-size: 0.875rem; font-weight: 600; color: #0f172a; line-height: 1.35; margin-top: 0.05rem; }
-.rdlab-card-desc {
-  font-size: 0.78rem; color: #64748b; line-height: 1.62;
-  display: -webkit-box; -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical; overflow: hidden;
-}
+.rdlab-card-title { font-size: 0.80rem; font-weight: 600; color: #0f172a; line-height: 1.35; margin-top: 0.05rem; }
+.rdlab-card-desc { font-size: 0.78rem; color: #64748b; line-height: 1.62; }
 .rdlab-open {
   margin-top: auto; padding-top: 0.5rem; font-size: 0.74rem; font-weight: 600;
   color: var(--c, #2563eb); display: flex; align-items: center; gap: 3px;
@@ -367,14 +364,20 @@ def thumb_html(app: dict) -> str:
 
 
 # ── Hero ───────────────────────────────────────────────────────────────────────
-def render_hero(active_lang: str) -> str:
+def render_hero(active_lang: str, base_params: dict) -> str:
     fr_cls = "on" if active_lang == "fr" else ""
     en_cls = "on" if active_lang == "en" else ""
+    # URLs préservant les autres params (cats, q, admin)
+    def _url(target: str) -> str:
+        p = {k: v for k, v in base_params.items() if k != "lang"}
+        p["lang"] = target
+        return "?" + "&".join(f"{k}={v}" for k, v in p.items())
+
     return f"""
     <div class="rdlab-hero">
       <div class="rdlab-lang">
-        <button class="rdlab-lang-btn {fr_cls}" onclick="window.location.href='?lang=fr'">FR</button>
-        <button class="rdlab-lang-btn {en_cls}" onclick="window.location.href='?lang=en'">EN</button>
+        <a href="{_url("fr")}" class="rdlab-lang-btn {fr_cls}" target="_self">FR</a>
+        <a href="{_url("en")}" class="rdlab-lang-btn {en_cls}" target="_self">EN</a>
       </div>
       <div class="rdlab-hero-inner">
         <span class="rdlab-eyebrow">{u("eyebrow")}</span>
@@ -385,9 +388,12 @@ def render_hero(active_lang: str) -> str:
     """
 
 
-# ── Filtres pills ──────────────────────────────────────────────────────────────
-def render_filters(apps: list[dict], active_cats: set[str], search_val: str) -> str:
-    pills_html = ""
+# ── Filtres pills — liens <a> purs, pas de JS ─────────────────────────────────
+def render_filters(apps: list[dict], active_code: str) -> str:
+    tous_cls = "rdlab-pill active" if not active_code else "rdlab-pill"
+    tous_label = "Tous" if lang() == "fr" else "All"
+    pills_html = f'<a href="?" class="{tous_cls}" data-c="all" target="_self">{tous_label}</a>'
+
     for cat_fr, code in CAT_CODE.items():
         count = sum(1 for a in apps if a.get("category") == cat_fr)
         if count == 0:
@@ -395,40 +401,16 @@ def render_filters(apps: list[dict], active_cats: set[str], search_val: str) -> 
         cat_label = t(
             {"category": cat_fr, "category_en": _cat_en(apps, cat_fr)}, "category"
         )
-        checked = "checked" if cat_fr in active_cats else ""
-        # Le clic rebuilde l'URL avec ?cats= modifié
-        pills_html += f"""
-        <label class="rdlab-pill" data-c="{code}">
-          <input type="checkbox" {checked}
-                 onchange="toggleCat('{cat_fr}', this.checked)">
-          <span class="pl">{cat_label} <span class="pc">{count}</span></span>
-        </label>"""
+        cls = "rdlab-pill active" if code == active_code else "rdlab-pill"
+        pills_html += (
+            f'<a href="?cats={code}" class="{cls}" data-c="{code}" target="_self">'
+            f'{cat_label} <span class="pc">{count}</span></a>'
+        )
 
-    search_escaped = search_val.replace('"', "&quot;")
     return f"""
     <div class="rdlab-filters">
       <div class="rdlab-pills">{pills_html}</div>
-      <input type="text" class="rdlab-search"
-             placeholder="{u("search")}"
-             value="{search_escaped}"
-             oninput="updateSearch(this.value)">
     </div>
-    <script>
-    function toggleCat(cat, checked) {{
-      const params = new URLSearchParams(window.location.search);
-      let cats = (params.get('cats') || '').split(',').filter(Boolean);
-      if (checked) {{ if (!cats.includes(cat)) cats.push(cat); }}
-      else {{ cats = cats.filter(c => c !== cat); }}
-      params.set('cats', cats.join(','));
-      window.location.search = params.toString();
-    }}
-    function updateSearch(val) {{
-      const params = new URLSearchParams(window.location.search);
-      if (val) params.set('q', val); else params.delete('q');
-      // Debounce léger avant reload
-      clearTimeout(window._st); window._st = setTimeout(() => window.location.search = params.toString(), 400);
-    }}
-    </script>
     """
 
 
@@ -582,15 +564,11 @@ def main() -> None:
     if show_admin and not st.session_state.get("_sidebar_shown"):
         st.session_state["_sidebar_shown"] = True
 
-    # Catégories actives (depuis ?cats=)
+    # Catégorie active (depuis ?cats=<code>, radio-style : une seule à la fois)
     apps = load_apps()
-    all_cats_fr = list(CAT_CODE.keys())
-    cats_param = params.get("cats", "")
-    if cats_param:
-        active_cats = set(cats_param.split(","))
-    else:
-        active_cats = set(all_cats_fr)
-    search_val = params.get("q", "")
+    CODE_TO_FR = {v: k for k, v in CAT_CODE.items()}
+    active_code = params.get("cats", "")  # code court (ec, ed…) ou "" = tous
+    active_cat_fr = CODE_TO_FR.get(active_code, "")
 
     # Admin sidebar (conditionnelle)
     is_admin = False
@@ -602,10 +580,18 @@ def main() -> None:
         is_admin = admin_sidebar()
 
     # Hero
-    st.markdown(render_hero(lang()), unsafe_allow_html=True)
+    base_params = {k: params.get(k) for k in params if params.get(k)}
+    st.markdown(render_hero(lang(), base_params), unsafe_allow_html=True)
 
-    # Filtres
-    st.markdown(render_filters(apps, active_cats, search_val), unsafe_allow_html=True)
+    # Filtres (pills liens)
+    st.markdown(render_filters(apps, active_code), unsafe_allow_html=True)
+
+    # Recherche texte — widget Streamlit natif
+    search_label = "Filtrer par mot-clé" if lang() == "fr" else "Filter by keyword"
+    search_val = st.text_input(
+        search_label, placeholder=search_label + "...", label_visibility="collapsed",
+        key=f"search_{lang()}"
+    )
 
     # Filtrage
     q = search_val.strip().lower()
@@ -613,7 +599,7 @@ def main() -> None:
     for app in apps:
         if app.get("status") == "hidden" and not is_admin:
             continue
-        if active_cats and app.get("category") not in active_cats:
+        if active_cat_fr and app.get("category") != active_cat_fr:
             continue
         if q and not any(
             q in (app.get(f, "") or "").lower()

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquette — Portail Outils R&D</title>
+
+<!--
+  FONT injectable via :
+  st.markdown('<link rel="preconnect" href="https://fonts.googleapis.com">', unsafe_allow_html=True)
+  st.markdown('<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">', unsafe_allow_html=True)
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   CHROME MAQUETTE — ne pas injecter dans Streamlit
+   ══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #f0f2f6; /* couleur fond Streamlit par défaut */
+  font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+.mock-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1.75rem 2rem 7rem;
+}
+
+.mock-note {
+  font-size: 0.63rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CSS INJECTABLE — à copier dans st.markdown() avec unsafe_allow_html=True
+   Préfixe rdlab- pour éviter les conflits avec les classes Streamlit
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Typographie globale des blocs injectés ─────────────────── */
+.rdlab-hero, .rdlab-filters, .rdlab-grid, .rdlab-card, .rdlab-admin {
+  font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ── HERO (point 1, 2, 4) ────────────────────────────────────── */
+.rdlab-hero {
+  position: relative;
+  background: #08111f;
+  background-image:
+    radial-gradient(ellipse 75% 130% at 88% 8%,  rgba(59,130,246,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 80%  at 12% 92%, rgba(139,92,246,0.11) 0%, transparent 52%);
+  border-radius: 16px;
+  padding: 2.6rem 3rem 2.9rem;
+  margin-bottom: 1.2rem;
+  overflow: hidden;
+}
+
+/* Motif grille subtil en fond */
+.rdlab-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  border-radius: 16px;
+}
+
+.rdlab-hero-inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.rdlab-eyebrow {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  margin-bottom: 0.6rem;
+}
+
+.rdlab-title {
+  font-size: 2.55rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 0.7rem;
+}
+/* Accent bleu ciel pour fragments de titre */
+.rdlab-title .a   { color: #93c5fd; }
+/* Séparateur pâle pour titre bilingue */
+.rdlab-title .sep { color: rgba(255,255,255,0.22); font-weight: 300; margin: 0 0.18em; }
+
+.rdlab-subtitle {
+  font-size: 0.93rem;
+  font-weight: 400;
+  color: rgba(255,255,255,0.46);
+  line-height: 1.7;
+  max-width: 450px;
+  margin: 0 auto;
+  letter-spacing: 0.01em;
+}
+
+/* ── Toggle FR / EN dans le hero (point 4) ───────────────────── */
+/* Note : en Streamlit, ce toggle déclenche un st.session_state["lang"] = ... + st.rerun() */
+
+.rdlab-lang {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.2rem;
+  z-index: 2;
+  display: flex;
+  background: rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.rdlab-lang-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 11px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.14s, color 0.14s;
+  line-height: 1;
+}
+.rdlab-lang-btn.on {
+  background: rgba(255,255,255,0.13);
+  color: #fff;
+}
+.rdlab-lang-btn:hover:not(.on) { color: rgba(255,255,255,0.65); }
+
+/* ── Filtres pills (point 3) ─────────────────────────────────── */
+/* Structure : <label class="rdlab-pill" data-c="ec">          */
+/*               <input type="checkbox" checked>               */
+/*               <span class="pl"><svg/>Texte<span class="pc"> */
+/*             </label>                                         */
+/* Le CSS-checkbox-hack rend les pills cliquables sans JS.     */
+/* En Streamlit prod : chaque clic appelle st.rerun() via      */
+/* un st.components.html() custom ou params URL.               */
+
+.rdlab-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
+  flex-wrap: wrap;
+}
+
+.rdlab-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.rdlab-pill input[type=checkbox] { display: none; }
+
+.rdlab-pill .pl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.28rem 0.82rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--c, #2563eb);
+  color: var(--c, #2563eb);
+  background: transparent;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.77rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: background 0.13s, color 0.13s, opacity 0.13s;
+}
+
+/* État actif */
+.rdlab-pill input:checked + .pl {
+  background: var(--c, #2563eb);
+  color: #fff;
+}
+
+/* Hover (inactive) */
+.rdlab-pill:hover .pl { opacity: 0.78; }
+.rdlab-pill:has(input:checked):hover .pl { opacity: 0.88; }
+
+/* Compteur d'apps dans la pill */
+.rdlab-pill .pc {
+  font-size: 0.61rem;
+  font-weight: 700;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 99px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.11);
+}
+.rdlab-pill input:checked + .pl .pc { background: rgba(255,255,255,0.22); }
+
+/* Couleurs par catégorie — data-c = code court */
+.rdlab-pill[data-c=ec]  { --c: #16a34a; }   /* Modélisation électrochimique — vert    */
+.rdlab-pill[data-c=mf]  { --c: #64748b; }   /* Modélisation microfluidique  — gris    */
+.rdlab-pill[data-c=ed]  { --c: #d97706; }   /* Modélisation électrodépôt    — jaune   */
+.rdlab-pill[data-c=rag] { --c: #ea580c; }   /* Normes & RAG                 — orange  */
+.rdlab-pill[data-c=pm]  { --c: #16a34a; }   /* Gestion de projet            — vert    */
+.rdlab-pill[data-c=qv]  { --c: #dc2626; }   /* Qualité & Vision             — rouge   */
+
+/* Champ de recherche */
+.rdlab-search {
+  height: 34px;
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 9px;
+  padding: 0 0.9rem 0 2.05rem;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: #0f172a;
+  min-width: 180px;
+  outline: none;
+  transition: border-color 0.14s;
+  /* Icône loupe inline, aucune dépendance externe */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 0.58rem center;
+}
+.rdlab-search:focus { border-color: #2563eb; }
+.rdlab-search::placeholder { color: #94a3b8; }
+
+/* ── Grille de cartes (point 6) ──────────────────────────────── */
+.rdlab-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.05rem;
+}
+
+.rdlab-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 2px 10px rgba(0,0,0,0.04);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.rdlab-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Thumbnail — ratio 16/9 constant */
+.rdlab-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #0d1f3c;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.rdlab-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Badge statut en overlay flouté (coin haut-droit) */
+.rdlab-status {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0,0,0,0.50);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 99px;
+  padding: 3px 9px 3px 6px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.rdlab-sdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.rdlab-status[data-s=ok]   .rdlab-sdot { background: #4ade80; }
+.rdlab-status[data-s=wip]  .rdlab-sdot { background: #fbbf24; }
+.rdlab-status[data-s=soon] .rdlab-sdot { background: #94a3b8; }
+
+/* Corps de la carte */
+.rdlab-card-body {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  flex: 1;
+}
+
+/* Badge catégorie coloré par domaine */
+.rdlab-cat {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 99px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  width: fit-content;
+}
+.rdlab-cat[data-c=ec]  { background: #f0fdf4; color: #166534; }   /* vert   */
+.rdlab-cat[data-c=mf]  { background: #f1f5f9; color: #475569; }   /* gris   */
+.rdlab-cat[data-c=ed]  { background: #d97706; color: #fff; }          /* jaune solide */
+.rdlab-cat[data-c=rag] { background: #fff7ed; color: #9a3412; }   /* orange */
+.rdlab-cat[data-c=pm]  { background: #f0fdf4; color: #166534; }   /* vert   */
+.rdlab-cat[data-c=qv]  { background: #dc2626; color: #fff; }          /* rouge solide */
+
+/* Titre : plus lisible, mieux dimensionné */
+.rdlab-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.35;
+  margin-top: 0.05rem;
+}
+
+/* Description : 3 lignes max — net, pas verbeux */
+.rdlab-card-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.62;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* CTA "Ouvrir l'outil" visible au hover avec micro-animation */
+.rdlab-open {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--c, #2563eb);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0;
+  transform: translateX(-5px);
+  transition: opacity 0.16s, transform 0.16s;
+}
+.rdlab-card:hover .rdlab-open { opacity: 1; transform: translateX(0); }
+
+/* ── Lien admin discret (point 5) ────────────────────────────────
+   Python : st.set_page_config(initial_sidebar_state="collapsed")
+   Ce lien peut déclencher via :
+     st.query_params["admin"] = "1" → conditionnellement show sidebar
+   Ou via session_state + st.rerun()
+   ────────────────────────────────────────────────────────────── */
+.rdlab-admin {
+  display: block;
+  text-align: right;
+  margin-top: 2.5rem;
+  font-size: 0.65rem;
+  color: #dce3ef;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.rdlab-admin:hover { color: #94a3b8; }
+
+/* ══════════════════════════════════════════════════════════════
+   FIN CSS INJECTABLE
+   ══════════════════════════════════════════════════════════════ */
+
+
+/* ── Panel Tweaks (maquette uniquement) ─────────────────────── */
+#tw {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 275px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07);
+  border: 1px solid #e4e9f2;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  z-index: 200;
+  overflow: hidden;
+}
+#tw-head {
+  padding: 0.72rem 1rem;
+  background: #08111f;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.71rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+#tw-body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-height: 440px;
+  overflow-y: auto;
+}
+.tw-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 0.42rem;
+}
+.tw-opt {
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  border: 1.5px solid #e8edf5;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+  margin-bottom: 0.28rem;
+}
+.tw-opt:last-child { margin-bottom: 0; }
+.tw-opt:hover { border-color: #93c5fd; background: #f8faff; }
+.tw-opt.sel { border-color: #2563eb; background: #eff6ff; }
+.tw-opt-name { font-size: 0.78rem; font-weight: 600; color: #0f172a; }
+.tw-opt-note { font-size: 0.69rem; color: #64748b; line-height: 1.45; margin-top: 2px; }
+.tw-hr { height: 1px; background: #f1f5f9; }
+.tw-note {
+  background: #f8faff;
+  border-left: 3px solid #93c5fd;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0 7px 7px 0;
+  font-size: 0.70rem;
+  color: #475569;
+  line-height: 1.55;
+  margin-bottom: 0.35rem;
+}
+.tw-note:last-child { margin-bottom: 0; }
+.tw-note strong { color: #1e40af; font-weight: 600; }
+code {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  background: #e8edf5;
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: #334155;
+}
+</style>
+</head>
+<body>
+<div class="mock-page">
+
+  <p class="mock-note">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    Maquette interactive — hero · filtres · 3 cartes · panel options en bas à droite
+  </p>
+
+  <!-- ════════════════════════════════════════════════════════
+       BLOC 1 — HERO
+       Python : st.markdown(render_hero(lang, title_key), unsafe_allow_html=True)
+       ════════════════════════════════════════════════════════ -->
+  <div class="rdlab-hero">
+
+    <!-- FR/EN — dans la zone hero, haut droite (point 4) -->
+    <div class="rdlab-lang">
+      <button class="rdlab-lang-btn on"  onclick="setLang('fr', this)">FR</button>
+      <button class="rdlab-lang-btn"     onclick="setLang('en', this)">EN</button>
+    </div>
+
+    <div class="rdlab-hero-inner">
+      <span class="rdlab-eyebrow">outils partagés</span>
+      <h1 class="rdlab-title" id="h-title">
+        <span class="a">Sim</span>Lab
+      </h1>
+      <p class="rdlab-subtitle" id="h-sub">
+        Des simulations et analyses à portée de clic — explorez librement.
+      </p>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       BLOC 2 — FILTRES PILLS (point 3)
+       Python : st.markdown(render_filters(categories, active), unsafe_allow_html=True)
+       Note technique : interaction via st.components.html() + postMessage,
+       ou href="?cats=ec,mf" lu par st.query_params. Le CSS checkbox-hack
+       ici est pour la démo visuelle dans la maquette.
+       ════════════════════════════════════════════════════════ -->
+  <div class="rdlab-filters">
+    <div class="rdlab-pills">
+
+      <label class="rdlab-pill" data-c="ec">
+        <input type="checkbox" checked>
+        <span class="pl">Électrochimie <span class="pc">4</span></span>
+      </label>
+
+      <label class="rdlab-pill" data-c="mf">
+        <input type="checkbox" checked>
+        <span class="pl">Microfluidique <span class="pc">2</span></span>
+      </label>
+
+      <label class="rdlab-pill" data-c="ed">
+        <input type="checkbox" checked>
+        <span class="pl">Électrodéposition <span class="pc">1</span></span>
+      </label>
+
+      <label class="rdlab-pill" data-c="rag">
+        <input type="checkbox" checked>
+        <span class="pl">Normes & RAG <span class="pc">2</span></span>
+      </label>
+
+      <label class="rdlab-pill" data-c="pm">
+        <input type="checkbox" checked>
+        <span class="pl">Gestion projet <span class="pc">2</span></span>
+      </label>
+
+      <label class="rdlab-pill" data-c="qv">
+        <input type="checkbox" checked>
+        <span class="pl">Qualité & Vision <span class="pc">2</span></span>
+      </label>
+
+    </div>
+    <input type="text" class="rdlab-search" placeholder="Rechercher...">
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       BLOC 3 — CARTES (3 exemples)
+       Python : for app in filtered_apps: st.markdown(render_card(app), unsafe_allow_html=True)
+       ════════════════════════════════════════════════════════ -->
+  <div class="rdlab-grid">
+
+    <!-- Carte A — Électrochimie / CV-EIS -->
+    <a href="#" class="rdlab-card" onclick="return false">
+      <div class="rdlab-thumb">
+        <!-- Thumbnail SVG généré — à remplacer par <img src="..."> en prod -->
+        <svg viewBox="0 0 320 180" style="width:100%;height:100%;display:block;">
+          <defs>
+            <linearGradient id="gbg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"   stop-color="#091b35"/>
+              <stop offset="100%" stop-color="#0d2248"/>
+            </linearGradient>
+          </defs>
+          <rect width="320" height="180" fill="url(#gbg1)"/>
+          <!-- Axes -->
+          <line x1="22" y1="18" x2="22" y2="162" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <line x1="18" y1="158" x2="308" y2="158" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <!-- Grille légère -->
+          <line x1="80"  y1="20" x2="80"  y2="158" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="140" y1="20" x2="140" y2="158" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="200" y1="20" x2="200" y2="158" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="260" y1="20" x2="260" y2="158" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="22" y1="60"  x2="308" y2="60"  stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="22" y1="108" x2="308" y2="108" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <!-- Courbe CV principale -->
+          <path d="M26,153 C48,153 60,32 95,90 C122,136 148,152 165,92 C182,38 200,28 224,72 C244,110 262,150 304,150"
+                fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round"/>
+          <!-- Courbe CV secondaire -->
+          <path d="M26,100 C52,100 72,148 110,116 C142,90 162,150 185,132 C206,116 228,148 304,152"
+                fill="none" stroke="#3b82f6" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+          <!-- Label axe -->
+          <text x="165" y="175" text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="8" font-family="monospace">E (V vs. Ref)</text>
+          <text x="10"  y="90"  text-anchor="middle" fill="rgba(255,255,255,0.2)" font-size="8" font-family="monospace" transform="rotate(-90,10,90)">I (mA)</text>
+        </svg>
+        <div class="rdlab-status" data-s="ok">
+          <span class="rdlab-sdot"></span>Disponible
+        </div>
+      </div>
+      <div class="rdlab-card-body">
+        <span class="rdlab-cat" data-c="ec">Modélisation électrochimique</span>
+        <h3 class="rdlab-card-title">CV et EIS — couple redox sur électrode d'or</h3>
+        <p class="rdlab-card-desc">Voltammétrie cyclique et spectroscopie d'impédance. Équations de Nernst-Planck, Butler-Volmer, modèle de Randles.</p>
+        <span class="rdlab-open" style="--c:#16a34a">Ouvrir l'outil →</span>
+      </div>
+    </a>
+
+    <!-- Carte B — Normes & RAG -->
+    <a href="#" class="rdlab-card" onclick="return false">
+      <div class="rdlab-thumb">
+        <svg viewBox="0 0 320 180" style="width:100%;height:100%;display:block;">
+          <defs>
+            <linearGradient id="gbg2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"   stop-color="#18102c"/>
+              <stop offset="100%" stop-color="#1e1040"/>
+            </linearGradient>
+          </defs>
+          <rect width="320" height="180" fill="url(#gbg2)"/>
+          <!-- Document / norme -->
+          <rect x="32" y="16" width="90" height="148" rx="5" fill="rgba(139,92,246,0.08)" stroke="rgba(139,92,246,0.22)" stroke-width="1.2"/>
+          <rect x="44" y="30" width="66" height="5" rx="2"   fill="rgba(139,92,246,0.65)"/>
+          <rect x="44" y="43" width="56" height="3" rx="1.5" fill="rgba(255,255,255,0.16)"/>
+          <rect x="44" y="53" width="62" height="3" rx="1.5" fill="rgba(255,255,255,0.10)"/>
+          <rect x="44" y="63" width="48" height="3" rx="1.5" fill="rgba(255,255,255,0.10)"/>
+          <rect x="44" y="79" width="66" height="4" rx="2"   fill="rgba(139,92,246,0.42)"/>
+          <rect x="44" y="91" width="52" height="3" rx="1.5" fill="rgba(255,255,255,0.16)"/>
+          <rect x="44" y="101" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.10)"/>
+          <rect x="44" y="111" width="44" height="3" rx="1.5" fill="rgba(255,255,255,0.10)"/>
+          <rect x="44" y="127" width="66" height="4" rx="2"   fill="rgba(139,92,246,0.3)"/>
+          <rect x="44" y="139" width="40" height="3" rx="1.5" fill="rgba(255,255,255,0.16)"/>
+          <!-- Nœud IA -->
+          <circle cx="215" cy="88" r="31" fill="rgba(139,92,246,0.12)" stroke="rgba(139,92,246,0.45)" stroke-width="1.5"/>
+          <text x="215" y="83" text-anchor="middle" fill="#c4b5fd" font-size="10" font-family="monospace" font-weight="600">RAG</text>
+          <text x="215" y="97" text-anchor="middle" fill="#a78bfa" font-size="8" font-family="monospace">ISO 13485</text>
+          <!-- Flèche connexion -->
+          <path d="M126 88 L182 88" stroke="rgba(139,92,246,0.5)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <polygon points="181,84 189,88 181,92" fill="rgba(139,92,246,0.55)"/>
+          <!-- Réponse -->
+          <rect x="166" y="133" width="102" height="28" rx="5" fill="rgba(139,92,246,0.12)" stroke="rgba(139,92,246,0.28)" stroke-width="1"/>
+          <rect x="174" y="140" width="60" height="3" rx="1.5" fill="rgba(255,255,255,0.18)"/>
+          <rect x="174" y="149" width="45" height="3" rx="1.5" fill="rgba(255,255,255,0.11)"/>
+        </svg>
+        <div class="rdlab-status" data-s="ok">
+          <span class="rdlab-sdot"></span>Disponible
+        </div>
+      </div>
+      <div class="rdlab-card-body">
+        <span class="rdlab-cat" data-c="rag">Normes & RAG</span>
+        <h3 class="rdlab-card-title">RAG — normes médicales</h3>
+        <p class="rdlab-card-desc">Interrogation sémantique des normes médicales (ISO 13485, IEC 62304…). Réponses sourcées avec extraction des passages pertinents.</p>
+        <span class="rdlab-open" style="--c:#ea580c">Ouvrir l'outil →</span>
+      </div>
+    </a>
+
+    <!-- Carte C — Qualité & Vision -->
+    <a href="#" class="rdlab-card" onclick="return false">
+      <div class="rdlab-thumb">
+        <svg viewBox="0 0 320 180" style="width:100%;height:100%;display:block;">
+          <defs>
+            <linearGradient id="gbg3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"   stop-color="#1c0a0a"/>
+              <stop offset="100%" stop-color="#2a1010"/>
+            </linearGradient>
+          </defs>
+          <rect width="320" height="180" fill="url(#gbg3)"/>
+          <!-- Grille inspection visuelle -->
+          <rect x="30" y="20" width="120" height="90" rx="4" fill="rgba(220,38,38,0.08)" stroke="rgba(220,38,38,0.22)" stroke-width="1"/>
+          <!-- Grille de pixels simulée -->
+          <line x1="30" y1="50" x2="150" y2="50" stroke="rgba(220,38,38,0.12)" stroke-width="1"/>
+          <line x1="30" y1="80" x2="150" y2="80" stroke="rgba(220,38,38,0.12)" stroke-width="1"/>
+          <line x1="70" y1="20" x2="70" y2="110" stroke="rgba(220,38,38,0.12)" stroke-width="1"/>
+          <line x1="110" y1="20" x2="110" y2="110" stroke="rgba(220,38,38,0.12)" stroke-width="1"/>
+          <!-- Zone défaut détectée -->
+          <rect x="72" y="52" width="36" height="26" rx="2" fill="rgba(220,38,38,0.25)" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="3,2"/>
+          <!-- Œil / loupe IA -->
+          <circle cx="240" cy="65" r="32" fill="rgba(220,38,38,0.10)" stroke="rgba(220,38,38,0.35)" stroke-width="1.5"/>
+          <circle cx="240" cy="65" r="14" fill="rgba(220,38,38,0.18)" stroke="rgba(220,38,38,0.5)" stroke-width="1.2"/>
+          <circle cx="240" cy="65" r="5"  fill="rgba(220,38,38,0.7)"/>
+          <!-- Flèche connexion -->
+          <path d="M154 65 L206 65" stroke="rgba(220,38,38,0.45)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <polygon points="205,61 213,65 205,69" fill="rgba(220,38,38,0.5)"/>
+          <!-- Label résultat -->
+          <rect x="172" y="112" width="110" height="28" rx="5" fill="rgba(220,38,38,0.12)" stroke="rgba(220,38,38,0.28)" stroke-width="1"/>
+          <text x="227" y="124" text-anchor="middle" fill="rgba(220,38,38,0.75)" font-size="8" font-family="monospace" font-weight="600">DÉFAUT DÉTECTÉ</text>
+          <text x="227" y="135" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="7" font-family="monospace">confiance : 94%</text>
+          <!-- Barre score -->
+          <rect x="30" y="128" width="120" height="5" rx="2.5" fill="rgba(255,255,255,0.06)"/>
+          <rect x="30" y="128" width="96"  height="5" rx="2.5" fill="rgba(220,38,38,0.55)"/>
+          <text x="30" y="148" fill="rgba(255,255,255,0.2)" font-size="7" font-family="monospace">score anomalie : 0.94</text>
+        </svg>
+        <div class="rdlab-status" data-s="ok">
+          <span class="rdlab-sdot"></span>Disponible
+        </div>
+      </div>
+      <div class="rdlab-card-body">
+        <span class="rdlab-cat" data-c="qv">Qualité &amp; Vision</span>
+        <h3 class="rdlab-card-title">Inspection par vision artificielle</h3>
+        <p class="rdlab-card-desc">Classification d'images et détection de défauts. Modèles pré-entraînés, seuillage, reporting et visualisation des anomalies.</p>
+        <span class="rdlab-open" style="--c:#dc2626">Ouvrir l'outil →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- Lien admin discret (point 5)
+       Python :
+         st.set_page_config(initial_sidebar_state="collapsed")
+         if st.query_params.get("admin") == "1":
+             st.session_state["sidebar_open"] = True
+  -->
+  <a href="#" class="rdlab-admin" onclick="return false">⚙ admin</a>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     PANEL TWEAKS — exploration des options de titre/sous-titre
+     ════════════════════════════════════════════════════════════ -->
+<div id="tw">
+  <div id="tw-head" onclick="toggleTw()">
+    <span>✦ Options titre &amp; sous-titre</span>
+    <span id="tw-arr">▼</span>
+  </div>
+  <div id="tw-body">
+
+    <div>
+      <div class="tw-label">Titre — 4 propositions</div>
+
+      <div class="tw-opt sel" onclick="setTitle(0, this)">
+        <div class="tw-opt-name">SimLab</div>
+        <div class="tw-opt-note">Court, mémorable. "Sim" = simulation, "Lab" = laboratoire. Perso sans être amateur.</div>
+      </div>
+      <div class="tw-opt" onclick="setTitle(1, this)">
+        <div class="tw-opt-name">R&D Toolkit</div>
+        <div class="tw-opt-note">Direct, professionnel. Clair sur le contenu. Légèrement anglicisé, crédible en contexte R&D.</div>
+      </div>
+      <div class="tw-opt" onclick="setTitle(2, this)">
+        <div class="tw-opt-name">Outils · Tools</div>
+        <div class="tw-opt-note">Bilingue simultané. Le "·" comme séparateur neutre. Minimaliste, aucune hiérarchie FR/EN.</div>
+      </div>
+      <div class="tw-opt" onclick="setTitle(3, this)">
+        <div class="tw-opt-name">Le Labo</div>
+        <div class="tw-opt-note">Chaleureux et personnel. Évoque l'espace de travail partagé. Non-corporate, direct.</div>
+      </div>
+    </div>
+
+    <div class="tw-hr"></div>
+
+    <div>
+      <div class="tw-label">Sous-titre — 3 accroches</div>
+
+      <div class="tw-opt sel" onclick="setSub(0, this)">
+        <div class="tw-opt-name">À portée de clic</div>
+        <div class="tw-opt-note">"Des simulations et analyses à portée de clic — explorez librement."</div>
+      </div>
+      <div class="tw-opt" onclick="setSub(1, this)">
+        <div class="tw-opt-name">Ouverts à ceux qui les trouvent utiles</div>
+        <div class="tw-opt-note">"Mes outils de modélisation et d'IA — ouverts à ceux qui les trouvent utiles."</div>
+      </div>
+      <div class="tw-opt" onclick="setSub(2, this)">
+        <div class="tw-opt-name">Du banc de labo au partage</div>
+        <div class="tw-opt-note">"Simulation · Analyse · IA — du banc de labo au partage entre collègues."</div>
+      </div>
+    </div>
+
+    <div class="tw-hr"></div>
+
+    <div>
+      <div class="tw-label">Notes d'implémentation</div>
+      <div class="tw-note">
+        <strong>Sidebar toujours fermée (pt. 5)</strong><br>
+        Python : <code>st.set_page_config(initial_sidebar_state="collapsed")</code><br>
+        Accès admin via <code>?admin=1</code> dans l'URL + <code>st.query_params</code>. La sidebar s'ouvre conditionnellement.
+      </div>
+      <div class="tw-note">
+        <strong>Cartes (pt. 6)</strong><br>
+        Thumbnail 16/9 · Badge catégorie coloré · Titre 14px/600 · Description 3 lignes max · Hover lift −4px + ombre · Statut overlay flouté.
+      </div>
+      <div class="tw-note">
+        <strong>Pills (pt. 3)</strong><br>
+        CSS pur : <code>label + input:checked</code>. Couleur par catégorie via <code>--c</code>. Icônes SVG inline 12px. En Streamlit : intégration via <code>st.components.html()</code> + <code>postMessage</code>.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  /* ─── Lang toggle ─────────────────────────────────────── */
+  function setLang(l, btn) {
+    document.querySelectorAll('.rdlab-lang-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  }
+
+  /* ─── Titre ────────────────────────────────────────────── */
+  const TITLES = [
+    '<span class="a">Sim</span>Lab',
+    'R&amp;D Toolkit',
+    'Outils <span class="sep">·</span> Tools',
+    'Le <span class="a">Labo</span>',
+  ];
+  function setTitle(idx, el) {
+    document.getElementById('h-title').innerHTML = TITLES[idx];
+    el.closest('div').querySelectorAll('.tw-opt').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+
+  /* ─── Sous-titre ───────────────────────────────────────── */
+  const SUBS = [
+    'Des simulations et analyses à portée de clic — explorez librement.',
+    "Mes outils de modélisation et d'IA — ouverts à ceux qui les trouvent utiles.",
+    'Simulation · Analyse · IA — du banc de labo au partage entre collègues.',
+  ];
+  function setSub(idx, el) {
+    document.getElementById('h-sub').textContent = SUBS[idx];
+    el.closest('div').querySelectorAll('.tw-opt').forEach(o => o.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+
+  /* ─── Toggle panel ─────────────────────────────────────── */
+  let twOpen = true;
+  function toggleTw() {
+    twOpen = !twOpen;
+    document.getElementById('tw-body').style.display = twOpen ? '' : 'none';
+    document.getElementById('tw-arr').textContent = twOpen ? '▼' : '▲';
+  }
+</script>
+</body>
+</html>
