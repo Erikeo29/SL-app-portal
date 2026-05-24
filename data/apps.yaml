@@ -1,148 +1,163 @@
-# Portail Applications R&D - configuration
-# Statuts : live | dev | hidden
-# Champs texte : name/description = FR (défaut), name_en/description_en = EN
-
 categories_fr:
-  - Modélisation électrochimique
-  - Modélisation électrodéposition
-  - Modélisation microfluidique
-  - Normes & RAG
-  - Gestion de projet
-  - Qualité & Vision
-
+- Modélisation électrochimique
+- Modélisation électrodéposition
+- Modélisation microfluidique
+- Normes & RAG
+- Gestion de projet
+- Qualité & Vision
 categories_en:
-  - Electrochemical modelling
-  - Electrodeposition modelling
-  - Microfluidic modelling
-  - Standards & RAG
-  - Project management
-  - Quality & Vision
-
+- Electrochemical modelling
+- Electrodeposition modelling
+- Microfluidic modelling
+- Standards & RAG
+- Project management
+- Quality & Vision
 apps:
-
-  # ── Modélisation électrochimique ───────────────────────────────────────────
-  - id: "04a"
-    name: "Modélisation électrochimique - CV et EIS - d'un couple redox sur une électrode d'or"
-    name_en: "Electrochemical modelling - CV and EIS of a redox couple on gold electrode"
-    description: "Simulation voltammétrie cyclique et EIS d'un couple redox. Equations de Nernst-Planck, Butler-Volmer, modèle de Randles. Etude de l'impact de des paramètres électrochimiques et de la géométrie de l'électrode. Code : Python."
-    description_en: "Cyclic voltammetry and EIS simulation of a redox couple. Nernst-Planck, Butler-Volmer, Randles model. Study of the impact of electrochemical parameters and electrode geometry. Code: Python."
-    url: "https://echem-redox-couple.streamlit.app"
-    abbrev: "CV"
-    category: "Modélisation électrochimique"
-    category_en: "Electrochemical modelling"
-    status: "live"
-
-  - id: "04b"
-    name: "Modélisation électrochimique - CV et EIS - d'une électrode or avec impuretés nickel et cuivre"
-    name_en: "Electrochemical modelling - CV and EIS of a gold electrode with nickel and copper impurities"
-    description: "Modélisation du comportement électrochimique d'une électrode d'or avec impuretés Ni et Cu en fonction du pH et de la quantité d'impuretés. Equations de Nernst, Butler-Volmer, Langmuir, modèle de Randles. Code : Python."
-    description_en: "Modelling of the electrochemical behaviour of a gold electrode with Ni and Cu impurities as a function of pH and impurity content. Nernst, Butler-Volmer, Langmuir equations, Randles model. Code: Python."
-    url: "https://echem-gold-electrode.streamlit.app"
-    abbrev: "Au"
-    category: "Modélisation électrochimique"
-    category_en: "Electrochemical modelling"
-    status: "live"
-
-  - id: "05"
-    name: "Biosenseurs à aptamères"
-    name_en: "Aptamer-based biosensors"
-    description: "Performance d'électrodes modifiées par aptamères (E-AB). Analyse du signal méthylène bleu, fenêtres de signal. Code : Python."
-    description_en: "Performance of aptamer-modified electrodes (E-AB). Methylene blue signal analysis, signal windows. Code: Python."
-    url: "https://aptamer-v1.streamlit.app"
-    abbrev: "E-AB"
-    category: "Modélisation électrochimique"
-    category_en: "Electrochemical modelling"
-    status: "hidden"
-
-  # ── Modélisation électrodéposition ────────────────────────────────────────
-  - id: "10"
-    name: "Modélisation de la répartition des épaisseurs d'un dépôt électrolytique"
-    name_en: "Electroplating - thickness distribution modelling"
-    description: "Etude de la distribution des épaisseurs en fonction du design du produit (géométrie, résistivité) et des paramètres process (densité de courant, conductivité du bain, configuration anodique). Modèle de distribution du courant secondaire. Equations de Laplace, Butler-Volmer, Faraday. Code : Python."
-    description_en: "Thickness distribution study as a function of product design (geometry, resistivity) and process parameters (current density, bath conductivity, anode configuration). Secondary current distribution model. Laplace, Butler-Volmer, Faraday equations. Code: Python."
-    url: "https://electroplating.streamlit.app"
-    abbrev: "EP"
-    category: "Modélisation électrodéposition"
-    category_en: "Electrodeposition modelling"
-    status: "live"
-
-  # ── Modélisation microfluidique ───────────────────────────────────────────
-  - id: "03"
-    name: "Microfluidique : modélisation de dispense et d'écoulement de liquide dans micro-cavité ou micro-canal"
-    name_en: "Microfluidics: modelling of liquid dispensing and flow in micro-cavity or micro-channel"
-    description: "Simulation fluidique pour dispense d'un liquide visqueux. Capillarité dans un micro-canal. Modèle Carreau-Yasuda. Méthodes VOF/LBM/SPH (OpenFOAM, C++)."
-    description_en: "Fluid simulation for viscous liquid dispensing. Capillarity in a micro-channel. Carreau-Yasuda model. VOF/LBM/SPH methods (OpenFOAM, C++)."
-    url: "https://dispense-encre.streamlit.app"
-    abbrev: "SIM"
-    category: "Modélisation microfluidique"
-    category_en: "Microfluidic modelling"
-    status: "live"
-
-  # ── Normes & RAG ──────────────────────────────────────────────────────────
-  - id: "20a"
-    name: "RAG - normes médicales"
-    name_en: "RAG - medical standards"
-    description: "Interrogation sémantique de normes médicales (ISO 13485, IEC 62304...). Réponses sourcées et référencées."
-    description_en: "Semantic querying of medical device standards (ISO 13485, IEC 62304...). Sourced and referenced answers."
-    url: "https://rag-normes-med.streamlit.app"
-    abbrev: "MED"
-    category: "Normes & RAG"
-    category_en: "Standards & RAG"
-    status: "live"
-
-  - id: "20b"
-    name: "RAG - normes statistiques"
-    name_en: "RAG - statistical standards"
-    description: "Recherche dans les normes statistiques et méthodes analytiques. Validation, MSA, SPC, ISO 5725."
-    description_en: "Search in statistical standards and analytical methods. Validation, MSA, SPC, ISO 5725."
-    url: "https://rag-normes-stat.streamlit.app"
-    abbrev: "STAT"
-    category: "Normes & RAG"
-    category_en: "Standards & RAG"
-    status: "live"
-
-  # ── Gestion de projet ─────────────────────────────────────────────────────
-  - id: "21"
-    name: "Gestion de projet R&D"
-    name_en: "R&D project management"
-    description: "Tableau de bord projet : roadmap, jalons, ressources, statuts RAG, reporting intégré."
-    description_en: "Project dashboard: roadmap, milestones, resources, RAG status, integrated reporting."
-    url: "https://project-management-v1.streamlit.app"
-    abbrev: "GP"
-    category: "Gestion de projet"
-    category_en: "Project management"
-    status: "live"
-
-  - id: "22"
-    name: "Calculateur COGS"
-    name_en: "COGS calculator"
-    description: "Calcul du coût de revient (COGS) par produit, composant et scénario de volume de production."
-    description_en: "Cost of goods sold (COGS) calculation by product, component and production volume scenario."
-    url: "https://cogs-calculator.streamlit.app"
-    abbrev: "COGS"
-    category: "Gestion de projet"
-    category_en: "Project management"
-    status: "live"
-
-  # ── Qualité & Vision ──────────────────────────────────────────────────────
-  - id: "23"
-    name: "Inspection par vision artificielle"
-    name_en: "AI visual inspection"
-    description: "Classification d'images et détection de défauts par vision artificielle. Modèles pré-entraînés, reporting."
-    description_en: "Image classification and defect detection by computer vision. Pre-trained models, reporting."
-    url: "https://computer-vision-inspection.streamlit.app"
-    abbrev: "CV"
-    category: "Qualité & Vision"
-    category_en: "Quality & Vision"
-    status: "live"
-
-  - id: "24"
-    name: "Analyse VOC - réclamations clients"
-    name_en: "VOC - customer complaint analysis"
-    description: "Traitement et analyse des réclamations clients (VOC). Clustering thématique, tendances, tableaux de bord."
-    description_en: "Processing and analysis of customer complaints (VOC). Thematic clustering, trends, dashboards."
-    url: "https://voc-complaints.streamlit.app"
-    abbrev: "VOC"
-    category: "Qualité & Vision"
-    category_en: "Quality & Vision"
-    status: "live"
+- id: 04a
+  name: Modélisation électrochimique - CV et EIS - d'un couple redox sur une électrode
+    d'or
+  name_en: Electrochemical modelling - CV and EIS of a redox couple on gold electrode
+  description: 'Simulation voltammétrie cyclique et EIS d''un couple redox. Equations
+    de Nernst-Planck, Butler-Volmer, modèle de Randles. Etude de l''impact de des
+    paramètres électrochimiques et de la géométrie de l''électrode. Code : Python.'
+  description_en: 'Cyclic voltammetry and EIS simulation of a redox couple. Nernst-Planck,
+    Butler-Volmer, Randles model. Study of the impact of electrochemical parameters
+    and electrode geometry. Code: Python.'
+  url: https://echem-redox-couple.streamlit.app
+  abbrev: CV
+  category: Modélisation électrochimique
+  category_en: Electrochemical modelling
+  status: live
+- id: 04b
+  name: Modélisation électrochimique - CV et EIS - d'une électrode or avec impuretés
+    nickel et cuivre
+  name_en: Electrochemical modelling - CV and EIS of a gold electrode with nickel
+    and copper impurities
+  description: 'Modélisation du comportement électrochimique d''une électrode d''or
+    avec impuretés Ni et Cu en fonction du pH et de la quantité d''impuretés. Equations
+    de Nernst, Butler-Volmer, Langmuir, modèle de Randles. Code : Python.'
+  description_en: 'Modelling of the electrochemical behaviour of a gold electrode
+    with Ni and Cu impurities as a function of pH and impurity content. Nernst, Butler-Volmer,
+    Langmuir equations, Randles model. Code: Python.'
+  url: https://echem-gold-electrode.streamlit.app
+  abbrev: Au
+  category: Modélisation électrochimique
+  category_en: Electrochemical modelling
+  status: live
+- id: '05'
+  name: Biosenseurs à aptamères
+  name_en: Aptamer-based biosensors
+  description: 'Performance d''électrodes modifiées par aptamères (E-AB). Analyse
+    du signal méthylène bleu, fenêtres de signal. Code : Python.'
+  description_en: 'Performance of aptamer-modified electrodes (E-AB). Methylene blue
+    signal analysis, signal windows. Code: Python.'
+  url: https://aptamer-v1.streamlit.app
+  abbrev: E-AB
+  category: Modélisation électrochimique
+  category_en: Electrochemical modelling
+  status: hidden
+- id: '10'
+  name: Modélisation de la répartition des épaisseurs d'un dépôt électrolytique
+  name_en: Electroplating - thickness distribution modelling
+  description: 'Etude de la distribution des épaisseurs en fonction du design du produit
+    (géométrie, résistivité) et des paramètres process (densité de courant, conductivité
+    du bain, configuration anodique). Modèle de distribution du courant secondaire.
+    Equations de Laplace, Butler-Volmer, Faraday. Code : Python.'
+  description_en: 'Thickness distribution study as a function of product design (geometry,
+    resistivity) and process parameters (current density, bath conductivity, anode
+    configuration). Secondary current distribution model. Laplace, Butler-Volmer,
+    Faraday equations. Code: Python.'
+  url: https://electroplating.streamlit.app
+  abbrev: EP
+  category: Modélisation électrodéposition
+  category_en: Electrodeposition modelling
+  status: live
+- id: '03'
+  name: 'Microfluidique : modélisation de dispense et d''écoulement de liquide dans
+    micro-cavité ou micro-canal'
+  name_en: 'Microfluidics: modelling of liquid dispensing and flow in micro-cavity
+    or micro-channel'
+  description: Simulation fluidique pour dispense d'un liquide visqueux. Capillarité
+    dans un micro-canal. Modèle Carreau-Yasuda. Méthodes VOF/LBM/SPH (OpenFOAM, C++).
+  description_en: Fluid simulation for viscous liquid dispensing. Capillarity in a
+    micro-channel. Carreau-Yasuda model. VOF/LBM/SPH methods (OpenFOAM, C++).
+  url: https://dispense-encre.streamlit.app
+  abbrev: SIM
+  category: Modélisation microfluidique
+  category_en: Microfluidic modelling
+  status: live
+- id: 20a
+  name: RAG - normes médicales
+  name_en: RAG - medical standards
+  description: Interrogation sémantique de normes médicales (ISO 13485, IEC 62304...).
+    Réponses sourcées et référencées.
+  description_en: Semantic querying of medical device standards (ISO 13485, IEC 62304...).
+    Sourced and referenced answers.
+  url: https://rag-normes-med.streamlit.app
+  abbrev: MED
+  category: Normes & RAG
+  category_en: Standards & RAG
+  status: dev
+  progress: 70
+- id: 20b
+  name: RAG - normes statistiques
+  name_en: RAG - statistical standards
+  description: Recherche dans les normes statistiques et méthodes analytiques. Validation,
+    MSA, SPC, ISO 5725.
+  description_en: Search in statistical standards and analytical methods. Validation,
+    MSA, SPC, ISO 5725.
+  url: https://rag-normes-stat.streamlit.app
+  abbrev: STAT
+  category: Normes & RAG
+  category_en: Standards & RAG
+  status: live
+- id: '21'
+  name: Gestion de projet R&D
+  name_en: R&D project management
+  description: 'Tableau de bord projet : roadmap, jalons, ressources, statuts RAG,
+    reporting intégré.'
+  description_en: 'Project dashboard: roadmap, milestones, resources, RAG status,
+    integrated reporting.'
+  url: https://project-management-v1.streamlit.app
+  abbrev: GP
+  category: Gestion de projet
+  category_en: Project management
+  status: hidden
+- id: '22'
+  name: Calculateur COGS
+  name_en: COGS calculator
+  description: Calcul du coût de revient (COGS) par produit, composant et scénario
+    de volume de production.
+  description_en: Cost of goods sold (COGS) calculation by product, component and
+    production volume scenario.
+  url: https://cogs-calculator.streamlit.app
+  abbrev: COGS
+  category: Gestion de projet
+  category_en: Project management
+  status: live
+- id: '23'
+  name: Inspection par vision artificielle
+  name_en: AI visual inspection
+  description: Classification d'images et détection de défauts par vision artificielle.
+    Modèles pré-entraînés, reporting.
+  description_en: Image classification and defect detection by computer vision. Pre-trained
+    models, reporting.
+  url: https://computer-vision-inspection.streamlit.app
+  abbrev: CV
+  category: Qualité & Vision
+  category_en: Quality & Vision
+  status: dev
+  progress: 60
+- id: '24'
+  name: Analyse VOC - réclamations clients
+  name_en: VOC - customer complaint analysis
+  description: Traitement et analyse des réclamations clients (VOC). Clustering thématique,
+    tendances, tableaux de bord.
+  description_en: Processing and analysis of customer complaints (VOC). Thematic clustering,
+    trends, dashboards.
+  url: https://voc-complaints.streamlit.app
+  abbrev: VOC
+  category: Qualité & Vision
+  category_en: Quality & Vision
+  status: dev
+  progress: 50
